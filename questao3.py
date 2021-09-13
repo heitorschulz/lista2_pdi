@@ -134,6 +134,15 @@ def convolucaonxn_v2(imagem, filtro, tamanho_filtro):
 
     return pixels_n
 
+
+def limiar(img,corte):
+
+    for i in range(img.size[0]):
+        for j in range(img.size[1]):
+            if(img[i,j]<corte):
+                img[i,j]=0
+    return img
+
 def main():
     #Filtro: Passa-Baixa 3x3
     Constante_Passa_Baixa_3x3 = 1/9
@@ -216,7 +225,7 @@ def main():
     print("Limiares")
     for i in range(11):
         corte=Max*(i/10.0)
-        Grad_C=np.clip(Grad,corte,255)
+        Grad_C=limiar(Grad,corte,255)
         img = Image.fromarray(np.uint8(Grad_C))
         img.save('output/3.4_Limiar_'+str(i/10.0)+'.jpg')
 
