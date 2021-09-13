@@ -82,6 +82,21 @@ def laranja2verde(imagem_hsi):
 
     for i in range(imagem_hsi.shape[0]):
         for j in range(imagem_hsi.shape[1]):
+            if(imagem_hsi[i,j,0]<15):
+                imagem_hsi[i,j,0]+=65
+            elif(imagem_hsi[i,j,0]>=15 and imagem_hsi[i,j,0]<30):
+                imagem_hsi[i,j,0]+=50
+            elif(imagem_hsi[i,j,0]>=30 and imagem_hsi[i,j,0]<45):
+                imagem_hsi[i,j,0]+=35
+            elif(imagem_hsi[i,j,0]>=45 and imagem_hsi[i,j,0]<60):
+                imagem_hsi[i,j,0]+=20
+            elif(imagem_hsi[i,j,0]>=60 and imagem_hsi[i,j,0]<75):
+                imagem_hsi[i,j,0]+=5
+
+def laranja2verde_2(imagem_hsi):
+
+    for i in range(imagem_hsi.shape[0]):
+        for j in range(imagem_hsi.shape[1]):
             if(imagem_hsi[i,j,0]<65):
                 imagem_hsi[i,j,0]=80
 
@@ -93,7 +108,8 @@ def main():
 
     imagem_em_hsi=convert_rgb2hsi(image)
 
-    laranja2verde(imagem_em_hsi)
+    #laranja2verde(imagem_em_hsi)
+    laranja2verde_2(imagem_em_hsi)
 
     imagem_em_rgb=convert_hsi2rgb(imagem_em_hsi)
 

@@ -131,10 +131,11 @@ def main():
 
     imagem = Image.open('input/Fig10.10(a).jpg')
 
+    #usar borramento mais agressivo
     temp=convolucaonxn(imagem,Filtro_Passa_Baixa_3x3,Constante_Passa_Baixa_3x3,"tmp",3,False,True)
-    convolucaonxn(temp,Filtro_Sobel_3x3_x,1,"3_Sobel_x",3,False,False)
+    convolucaonxn(temp,Filtro_Sobel_3x3_x,1,"3_Sobel_x_com_blur",3,False,False)
     convolucaonxn(imagem,Filtro_Sobel_3x3_x,1,"3_Sobel_x",3,False,False)
-    convolucaonxn(imagem,Filtro_Sobel_3x3_y,1,"3_Sobel_x",3,False,False)
+    convolucaonxn(imagem,Filtro_Sobel_3x3_y,1,"3_Sobel_y",3,False,False)
 
     return
 
