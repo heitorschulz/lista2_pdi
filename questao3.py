@@ -93,6 +93,46 @@ def convolucaonxn(imagem, filtro, constante, nome, tamanho_filtro, correcao,rota
 
     return img
 
+def convolucaonxn_v2(imagem, filtro, tamanho_filtro):
+
+    pixels = np.asarray(imagem, dtype='float64')
+
+    ##Realiza a convulação
+    img = Image.new(imagem.mode, imagem.size, color = 'black')
+    pixels_n = np.asarray(img,dtype='float64')
+
+    for i in range(imagem.size[0]):
+        for j in range(imagem.size[1]):
+
+            resultado=0
+            initCounter = - int(tamanho_filtro/2)
+            linha = initCounter
+            coluna = initCounter
+            
+            for ii in filtro:
+                for jj in ii:
+
+                    pos_y=i+linha
+                    pos_x=j+coluna
+                    ##Trata Bordas aqui
+                    if(pos_y<0):
+                        pos_y=0
+                    if(pos_x<0):
+                        pos_x=0
+                    if(pos_y>=imagem.size[0]):
+                        pos_y=imagem.size[0]-1
+                    if(pos_x>=imagem.size[1]):
+                        pos_x=imagem.size[1]-1
+                    resultado+=pixels[pos_x, pos_y]*jj
+                    
+                    coluna+=1
+                
+                coluna = initCounter
+                linha+=1
+            
+            pixels_n[j,i]=resultado
+
+    return pixels_n
 
 def main():
     #Filtro: Passa-Baixa 3x3
@@ -100,6 +140,14 @@ def main():
     Filtro_Passa_Baixa_3x3 = [[1, 1, 1],
                               [1, 1, 1],
                               [1, 1, 1]]
+
+    #Filtro: Passa-Baixa 5x5
+    Constante_Passa_Baixa_5x5 = 1/25
+    Filtro_Passa_Baixa_5x5 = [[1, 1, 1, 1, 1],
+                              [1, 1, 1, 1, 1],
+                              [1, 1, 1, 1, 1],
+                              [1, 1, 1, 1, 1],
+                              [1, 1, 1, 1, 1]]
 
     #Filtro: Gaussiano 3x3
     Constante_Gaussiano_3x3 = 1/16
@@ -132,10 +180,46 @@ def main():
     imagem = Image.open('input/Fig10.10(a).jpg')
 
     #usar borramento mais agressivo
-    temp=convolucaonxn(imagem,Filtro_Passa_Baixa_3x3,Constante_Passa_Baixa_3x3,"tmp",3,False,True)
-    convolucaonxn(temp,Filtro_Sobel_3x3_x,1,"3_Sobel_x_com_blur",3,False,False)
-    convolucaonxn(imagem,Filtro_Sobel_3x3_x,1,"3_Sobel_x",3,False,False)
-    convolucaonxn(imagem,Filtro_Sobel_3x3_y,1,"3_Sobel_y",3,False,False)
+    print("Passando Filtro Média 5x5")
+    temp=convolucaonxn(imagem,Filtro_Passa_Baixa_5x5,Constante_Passa_Baixa_5x5,"tmp",3,False,True)
+    #convolucaonxn(temp,Filtro_Sobel_3x3_x,1,"3_Sobel_x_com_blur",3,False,False)
+    #convolucaonxn(temp,Filtro_Sobel_3x3_x,1,"3_Sobel_x_com_blur5",3,False,False)
+    
+    
+    #Calculo Gx e Gy(Sobel)
+    print("Calculando Gx")
+    Gx=convolucaonxn_v2(temp,Filtro_Sobel_3x3_x,3)
+    print("Calculando Gy")
+    Gy=convolucaonxn_v2(temp,Filtro_Sobel_3x3_y,3)
+
+    img = Image.fromarray(np.uint8(np.clip(Gx,0,255)))
+    img.save('output/3.1_Gx'+'.jpg')
+    img = Image.fromarray(np.uint8(np.clip(Gy,0,255)))
+    img.save('output/3.2_Gy'+'.jpg')
+
+    Gx_m=np.abs(Gx)
+    Gy_m=np.abs(Gy)
+    img = Image.fromarray(np.uint8(np.clip(Gx_m,0,255)))
+    img.save('output/3.1_Gx_m'+'.jpg')
+    img = Image.fromarray(np.uint8(np.clip(Gy_m,0,255)))
+    img.save('output/3.2_Gy_m'+'.jpg')
+
+    # |Gx|+|Gy|
+    print("Calculando Gradiente: |Gx|+|Gy|")
+    Grad=np.clip(Gx_m+Gy_m,0,255)
+    img = Image.fromarray(np.uint8(Grad))
+    img.save('output/3.3_Grad'+'.jpg')
+
+    #Limiar de x%
+    Max=np.amax(Grad)
+
+    print("Limiares")
+    for i in range(11):
+        corte=Max*(i/10.0)
+        Grad_C=np.clip(Grad,corte,255)
+        img = Image.fromarray(np.uint8(Grad_C))
+        img.save('output/3.4_Limiar_'+str(i/10.0)+'.jpg')
+
 
     return
 
