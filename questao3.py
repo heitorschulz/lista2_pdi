@@ -137,8 +137,8 @@ def convolucaonxn_v2(imagem, filtro, tamanho_filtro):
 
 def limiar(img,corte):
 
-    for i in range(img.size[0]):
-        for j in range(img.size[1]):
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
             if(img[i,j]<corte):
                 img[i,j]=0
     return img
@@ -158,24 +158,6 @@ def main():
                               [1, 1, 1, 1, 1],
                               [1, 1, 1, 1, 1]]
 
-    #Filtro: Gaussiano 3x3
-    Constante_Gaussiano_3x3 = 1/16
-    Filtro_Gaussiano_3x3 = [[1, 2, 1],
-                            [2, 4, 2],
-                            [1, 2, 1]]
-
-    #Filtro: Laplaciano 3x3
-    Constante_Laplaciano_3x3 = 1
-    Filtro_Laplaciano_3x3 = [[0,  1, 0],
-                             [1, -4, 1],
-                             [0,  1, 0]]           
-
-    #Filtro: Laplaciano 45Graus 3x3
-    Constante_Laplaciano_3x3_45g = 1
-    Filtro_Laplaciano_3x3_45g = [[-1, -1, -1],
-                                 [-1,  8, -1],
-                                 [-1, -1, -1]] 
-
     #Filtro: Sobel 3x3 em X
     Filtro_Sobel_3x3_x = [[-1,  0, 1],
                           [-2,  0, 2],
@@ -191,9 +173,6 @@ def main():
     #usar borramento mais agressivo
     print("Passando Filtro Média 5x5")
     temp=convolucaonxn(imagem,Filtro_Passa_Baixa_5x5,Constante_Passa_Baixa_5x5,"tmp",3,False,True)
-    #convolucaonxn(temp,Filtro_Sobel_3x3_x,1,"3_Sobel_x_com_blur",3,False,False)
-    #convolucaonxn(temp,Filtro_Sobel_3x3_x,1,"3_Sobel_x_com_blur5",3,False,False)
-    
     
     #Calculo Gx e Gy(Sobel)
     print("Calculando Gx")
@@ -223,9 +202,9 @@ def main():
     Max=np.amax(Grad)
 
     print("Limiares")
-    for i in range(11):
-        corte=Max*(i/10.0)
-        Grad_C=limiar(Grad,corte,255)
+    for i in range(21):
+        corte=Max*(i/20.0)
+        Grad_C=limiar(Grad,corte)
         img = Image.fromarray(np.uint8(Grad_C))
         img.save('output/3.4_Limiar_'+str(i/10.0)+'.jpg')
 
