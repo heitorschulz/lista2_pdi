@@ -59,6 +59,7 @@ def segmentacao_limiar_global(imagem, T,img_orig):
 def segmentacao_otsu(imagem, limiar,img_orig):
     imgGTT = Image.new(img_orig.mode, img_orig.size, color = 'black')
     imgLET = Image.new(img_orig.mode, img_orig.size, color = 'black')
+    print("modo:",img_orig.mode)
 
     imageGTT = np.asarray(imgGTT,dtype='float64')
     imageLET = np.asarray(imgLET,dtype='float64')
