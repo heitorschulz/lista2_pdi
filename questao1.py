@@ -107,14 +107,13 @@ def main():
     image = np.asarray(fileImage,dtype='float64')
 
     imagem_em_hsi=convert_rgb2hsi(image)
-
-    #laranja2verde(imagem_em_hsi)
+    
     laranja2verde_2(imagem_em_hsi)
 
     imagem_em_rgb=convert_hsi2rgb(imagem_em_hsi)
 
     img = Image.fromarray(np.uint8(imagem_em_rgb))
-    img.save('output/oranges.jpg')
+    img.save('output/1_oranges.jpg')
 
     plt.figure(figsize=(6.4*5, 4.8*5), constrained_layout=False)
     plt.subplot(121), plt.imshow(np.uint8(image)), plt.title("Original")

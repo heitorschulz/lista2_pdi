@@ -68,11 +68,10 @@ def main():
     image[:,:,1]=G_array
     image[:,:,2]=B_array
 
-
     histograma(image,"depois")
 
     img = Image.fromarray(np.uint8(image))
-    img.save('output/baixo_contraste.jpg')
+    img.save('output/2_equalizacao_histograma.jpg')
 
     return 0
 
