@@ -196,7 +196,7 @@ def main():
     
     #fileImage = Image.open('input/rice.jpg')
     fileImage = Image.open('output/4h_img.jpg')
-    image = np.asarray(fileImage,dtype='float64')
+    image = np.asarray(fileImage, dtype='float64')
 
     dT=2
     T=calculo_limiar_global(image,dT)
