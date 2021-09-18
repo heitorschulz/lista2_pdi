@@ -1,6 +1,6 @@
 """
-Lista 1 de Processamento Digital de Imagens
-Questão 02
+Lista 2 de Processamento Digital de Imagens
+Questão 03
 Aluno: Heitor Schulz
 Matricula: 2016101758
 """
@@ -170,10 +170,9 @@ def main():
 
     imagem = Image.open('input/Fig10.10(a).jpg')
 
-    #usar borramento mais agressivo
     print("Passando Filtro Média 5x5")
     temp=convolucaonxn(imagem,Filtro_Passa_Baixa_5x5,Constante_Passa_Baixa_5x5,"tmp",3,False,True)
-    
+    return
     #Calculo Gx e Gy(Sobel)
     print("Calculando Gx")
     Gx=convolucaonxn_v2(temp,Filtro_Sobel_3x3_x,3)

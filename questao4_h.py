@@ -1,3 +1,9 @@
+"""
+Lista 2 de Processamento Digital de Imagens
+Questão 04
+Aluno: Heitor Schulz
+Matricula: 2016101758
+"""
 
 from PIL import Image
 import numpy as np

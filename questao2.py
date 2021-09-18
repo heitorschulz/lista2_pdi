@@ -1,3 +1,10 @@
+"""
+Lista 2 de Processamento Digital de Imagens
+Questão 02
+Aluno: Heitor Schulz
+Matricula: 2016101758
+"""
+
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
