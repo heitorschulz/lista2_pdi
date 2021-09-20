@@ -18,9 +18,8 @@ def shift(a_fft):
             b_fft[i,j] = a_fft[i,j] * (-1)**(i+j)
     return b_fft
 
-"""Bresenham's Line Algorithm
-    Produces a list of tuples from start and end
-"""
+#Algoritmo de linha de Bresenham's
+# Produz uma lista de tuplas com os pontos de uma linha do ponto "start" até o ponto "end"
 def get_line(start, end):
    
     # Setup initial conditions
@@ -129,9 +128,7 @@ def calcula_So(img_fft):
             y_ant=y
 
         angRad+=1/(2*raio)
-
     return valores
-
 
 
 def exercicio5(imagem1, nome):

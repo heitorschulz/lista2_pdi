@@ -8,14 +8,20 @@ Matricula: 2016101758
 from PIL import Image
 import numpy as np
 import math
+import cv2
+import matplotlib.pyplot as plt
 
-
+def shift(a_fft):
+    b_fft = np.zeros((a_fft.shape[0],a_fft.shape[1]),dtype=complex)
+    for i in range(a_fft.shape[0]):
+        for j in range(a_fft.shape[1]):
+            b_fft[i,j] = a_fft[i,j] * (-1)**(i+j)
+    return b_fft
 
 def calculo_limiar_global(imagem,dT):
-    T = np.mean(imagem)   #Limiar T atual
+    T = np.mean(imagem)   #Limiar T atual (O valor inicial é a média da imagem)
     T_ant = 0 #Limiar T anterior
 
-    #count=0
     #Enquanto a diferença do limiar atual e anterior não menor que o parâmetro dT, repete. 
     while(np.abs(T-T_ant)>dT):
         #Segmentar a imagem usando o limiar T em dois grupos G1 e G2, sendo que 
@@ -23,9 +29,6 @@ def calculo_limiar_global(imagem,dT):
         #em G2 tem pixels com intensidade <= T.
         G1=imagem[imagem>T]
         G2=imagem[imagem<=T]
-        
-        # count+=1
-        # print("Iteracao:",count)
 
         #Calcula a intensidade média de m1 e m2 para os pixels em G1 e G2, respectivamente.
         m1=np.mean(G1) if G1.size != 0 else 0
@@ -34,7 +37,6 @@ def calculo_limiar_global(imagem,dT):
         #Calcula um novo limiar
         T_ant=T
         T=0.5*(m1+m2)
-
 
     return round(T)
 
@@ -123,15 +125,54 @@ def calculo_limiar_otsu(imagem):
         if(var[i]>varMax):
             varMax=var[i]
             iMax=i
-
     return iMax
 
+def filtragem_homomorfica(filepath):
+
+    img = cv2.imread(filepath,-1)
+    img = np.float32(img)
+    img = img/255
+
+    rows,cols,dim=img.shape
+
+    rl, rh, cutoff = 0.3,1.01,1
+    imgYCrCb = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+
+    y,cr,cb = cv2.split(imgYCrCb)
+
+    y_log = np.log(y+0.01)
+    y_fft_shift = shift(y_log)
+    y_fft = np.fft.fft2(y_fft_shift)
+
+    DX = cols/cutoff
+    G = np.ones((rows,cols))
+    for i in range(rows):
+        for j in range(cols):
+            G[i][j]=((rh-rl)*(1-np.exp(-((i-rows/2)*2+(j-cols/2)*2)/(2*DX*2))))+rl
+
+    result_filter = G * y_fft
+
+    result_interm = np.real(shift(np.fft.ifft2(result_filter)))
+
+    result = np.exp(result_interm)
+    result = result.astype(y.dtype)
+
+    cv2.merge([result,cr,cb],imgYCrCb)
+
+    imgRGB = cv2.cvtColor(imgYCrCb, cv2.COLOR_YCrCb2BGR)
+
+    imgRGB2=np.clip(imgRGB*255,0,255)
+
+    cv2.imwrite('output/4h_img.jpg',imgRGB2)
 
 def main():
 
-
+    #filtragem_homomorfica('input/rice.jpg')
+    #fileImage = Image.open('output/4h_img.jpg')
+    
     fileImage = Image.open('input/rice.jpg')
-    image = np.asarray(fileImage,dtype='float64')
+    
+    image = np.asarray(fileImage, dtype='float64')
 
     dT=2
     T=calculo_limiar_global(image,dT)
@@ -145,10 +186,8 @@ def main():
         T_Otsu=calculo_limiar_otsu(image)
         segmentacao_otsu(image,T_Otsu,fileImage)
 
-    
     print("Global Simples:",T, "com dT=",dT ,"|| OTSU:",T_Otsu)
     return
-
 
 
 if __name__ == '__main__':

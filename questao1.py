@@ -9,7 +9,6 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-import time
 
 
 def convert_rgb2hsi(imagem):
@@ -125,6 +124,4 @@ def main():
     return 0
 
 if __name__ == '__main__':
-    #init_time= time.time()
     main()
-    #print("Total time:%s"%(time.time()-init_time))
